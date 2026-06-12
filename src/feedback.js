@@ -215,16 +215,16 @@ class ZhimoProgress extends HTMLElement {
       <style>
         :host { display: block; }
         .track {
-          height: 6px;
-          border-radius: var(--zhimo-radius-full);
-          background: var(--zhimo-bg-hover);
-          border: 1px solid var(--zhimo-border);
+          height: 4px;
+          border-radius: 0;
+          background: var(--zhimo-border-strong);
+          border: none;
           overflow: hidden;
         }
         .bar {
           height: 100%;
           width: 0%;
-          border-radius: var(--zhimo-radius-full);
+          border-radius: 0;
           background: var(--zhimo-seal);
           transition: width 300ms cubic-bezier(0.4, 0, 0.2, 1);
         }

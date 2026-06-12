@@ -222,25 +222,26 @@ class ZhimoSwitch extends HTMLElement {
         .track {
           position: relative;
           flex: none;
-          width: 36px;
-          height: 20px;
-          border-radius: var(--zhimo-radius-full);
-          background: var(--zhimo-border-strong);
-          transition: background var(--zhimo-transition);
+          width: 34px;
+          height: 18px;
+          box-sizing: border-box;
+          border-radius: var(--zhimo-radius-sm);
+          border: 1px solid var(--zhimo-border-strong);
+          background: var(--zhimo-bg-subtle);
+          transition: background var(--zhimo-transition), border-color var(--zhimo-transition);
         }
         .thumb {
           position: absolute;
           top: 2px;
           left: 2px;
-          width: 16px;
-          height: 16px;
-          border-radius: 50%;
-          background: #fff;
-          box-shadow: var(--zhimo-shadow-sm);
+          width: 12px;
+          height: 12px;
+          border-radius: 1px;
+          background: var(--zhimo-border-strong);
           transition: transform var(--zhimo-transition), background var(--zhimo-transition);
         }
-        :host([checked]) .track { background: var(--zhimo-seal); }
-        :host([checked]) .thumb { transform: translateX(16px); }
+        :host([checked]) .track { border-color: var(--zhimo-seal); background: var(--zhimo-seal); }
+        :host([checked]) .thumb { transform: translateX(16px); background: var(--zhimo-bg); }
         :host(:focus-visible) { outline: none; }
         :host(:focus-visible) .track { box-shadow: var(--zhimo-focus-ring); }
       </style>
