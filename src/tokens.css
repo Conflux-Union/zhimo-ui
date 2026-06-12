@@ -6,8 +6,8 @@
    ============================================ */
 
 :root {
-  --zhimo-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
-    "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  --zhimo-font: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC",
+    "Source Han Serif SC", "SimSun", Georgia, "Times New Roman", serif;
   --zhimo-font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC",
     "Source Han Serif SC", "SimSun", Georgia, "Times New Roman", serif;
 

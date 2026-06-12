@@ -10,6 +10,7 @@ const checkedFiles = [
   'src/layout.js',
   'src/feedback.js',
   'src/nav.js',
+  'src/menu.js',
   'src/ink.js',
   'src/tokens.css',
 ];

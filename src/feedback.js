@@ -23,7 +23,7 @@ class ZhimoModal extends HTMLElement {
           top: 50%;
           left: 50%;
           transform: translate(-50%, -50%);
-          width: min(480px, calc(100vw - 32px));
+          width: min(var(--zhimo-modal-width, 480px), calc(100vw - 32px));
           box-sizing: border-box;
           background: var(--zhimo-bg);
           border: 1px solid var(--zhimo-border-strong);

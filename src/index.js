@@ -2,6 +2,7 @@
 import './base.js';
 import './layout.js';
 import './nav.js';
+import './menu.js';
 import './ink.js';
 import { toast } from './feedback.js';
 

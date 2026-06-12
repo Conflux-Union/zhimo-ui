@@ -1,4 +1,4 @@
-/* ZhiMo UI 基础组件：zhimo-button / zhimo-input / zhimo-switch / zhimo-checkbox */
+/* ZhiMo UI 基础组件：zhimo-button / zhimo-input / zhimo-switch / zhimo-checkbox / zhimo-slider */
 
 class ZhimoButton extends HTMLElement {
   static observedAttributes = ['disabled', 'loading'];
@@ -96,7 +96,10 @@ class ZhimoButton extends HTMLElement {
 }
 
 class ZhimoInput extends HTMLElement {
-  static observedAttributes = ['label', 'placeholder', 'type', 'disabled', 'error', 'value'];
+  static observedAttributes = [
+    'label', 'placeholder', 'type', 'disabled', 'error', 'value', 'rows',
+    'min', 'max', 'step', 'maxlength',
+  ];
 
   constructor() {
     super();
@@ -114,7 +117,7 @@ class ZhimoInput extends HTMLElement {
         }
         label:empty { display: none; }
         /* 稿纸式输入框：只有一条底线，聚焦时变朱砂色 */
-        input {
+        input, textarea {
           font-family: inherit;
           font-size: 14px;
           width: 100%;
@@ -128,16 +131,23 @@ class ZhimoInput extends HTMLElement {
           border-radius: 0;
           transition: border-color var(--zhimo-transition), box-shadow var(--zhimo-transition);
         }
-        input::placeholder { color: var(--zhimo-fg-muted); }
-        input:hover:not(:disabled) { border-bottom-color: var(--zhimo-fg); }
-        input:focus {
+        textarea {
+          height: auto;
+          min-height: 68px;
+          padding: 6px 2px;
+          line-height: 1.5;
+          resize: vertical;
+        }
+        input::placeholder, textarea::placeholder { color: var(--zhimo-fg-muted); }
+        input:hover:not(:disabled), textarea:hover:not(:disabled) { border-bottom-color: var(--zhimo-fg); }
+        input:focus, textarea:focus {
           outline: none;
           border-bottom-color: var(--zhimo-seal);
           box-shadow: 0 1px 0 var(--zhimo-seal);
         }
-        input:disabled { color: var(--zhimo-fg-muted); border-bottom-style: dashed; cursor: not-allowed; }
-        :host([error]) input { border-bottom-color: var(--zhimo-danger); }
-        :host([error]) input:focus { box-shadow: 0 1px 0 var(--zhimo-danger); }
+        input:disabled, textarea:disabled { color: var(--zhimo-fg-muted); border-bottom-style: dashed; cursor: not-allowed; }
+        :host([error]) input, :host([error]) textarea { border-bottom-color: var(--zhimo-danger); }
+        :host([error]) input:focus, :host([error]) textarea:focus { box-shadow: 0 1px 0 var(--zhimo-danger); }
         .error { font-size: 12px; color: var(--zhimo-danger); margin-top: 6px; }
         .error:empty { display: none; }
       </style>
@@ -154,11 +164,34 @@ class ZhimoInput extends HTMLElement {
     switch (name) {
       case 'label': this._label.textContent = val ?? ''; break;
       case 'placeholder': this._input.placeholder = val ?? ''; break;
-      case 'type': this._input.type = val ?? 'text'; break;
+      case 'type': this._setFieldKind(val); break;
       case 'disabled': this._input.disabled = val !== null; break;
       case 'error': this._error.textContent = val ?? ''; break;
       case 'value': if (this._input.value !== val) this._input.value = val ?? ''; break;
+      case 'rows': if (this._input.tagName === 'TEXTAREA') this._input.rows = Number(val) || 3; break;
+      default: // min / max / step / maxlength fall through to the native field
+        val == null ? this._input.removeAttribute(name) : this._input.setAttribute(name, val);
     }
+  }
+
+  /* type="textarea" 时换成多行稿纸，其余值落到原生 input type 上 */
+  _setFieldKind(type) {
+    const wantTextarea = type === 'textarea';
+    if (wantTextarea !== (this._input.tagName === 'TEXTAREA')) {
+      const next = document.createElement(wantTextarea ? 'textarea' : 'input');
+      next.setAttribute('part', 'input');
+      next.value = this._input.value;
+      next.placeholder = this._input.placeholder;
+      next.disabled = this._input.disabled;
+      for (const attr of ['min', 'max', 'step', 'maxlength']) {
+        const v = this.getAttribute(attr);
+        if (v != null) next.setAttribute(attr, v);
+      }
+      this._input.replaceWith(next);
+      this._input = next;
+    }
+    if (wantTextarea) this._input.rows = Number(this.getAttribute('rows')) || 3;
+    else this._input.type = type ?? 'text';
   }
 
   get value() { return this._input.value; }
@@ -321,7 +354,112 @@ class ZhimoCheckbox extends HTMLElement {
   set checked(v) { this.toggleAttribute('checked', Boolean(v)); }
 }
 
+class ZhimoSlider extends HTMLElement {
+  static observedAttributes = ['min', 'max', 'step', 'value', 'disabled'];
+
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host { display: block; }
+        :host([disabled]) { opacity: 0.5; pointer-events: none; }
+        /* 细墨线轨道，已划过的部分染成朱砂 */
+        input {
+          -webkit-appearance: none;
+          appearance: none;
+          display: block;
+          width: 100%;
+          height: 16px;
+          margin: 0;
+          background: transparent;
+          cursor: pointer;
+        }
+        input::-webkit-slider-runnable-track {
+          height: 4px;
+          border-radius: var(--zhimo-radius-full);
+          background: linear-gradient(var(--zhimo-seal), var(--zhimo-seal)) no-repeat var(--zhimo-bg-hover);
+          background-size: var(--fill, 0%) 100%;
+          border: 1px solid var(--zhimo-border);
+          box-sizing: border-box;
+        }
+        input::-moz-range-track {
+          height: 4px;
+          border-radius: var(--zhimo-radius-full);
+          background: var(--zhimo-bg-hover);
+          border: 1px solid var(--zhimo-border);
+          box-sizing: border-box;
+        }
+        input::-moz-range-progress {
+          height: 4px;
+          border-radius: var(--zhimo-radius-full);
+          background: var(--zhimo-seal);
+        }
+        input::-webkit-slider-thumb {
+          -webkit-appearance: none;
+          width: 14px;
+          height: 14px;
+          margin-top: -6px;
+          border-radius: 50%;
+          background: #fff;
+          border: 1px solid var(--zhimo-border-strong);
+          box-shadow: var(--zhimo-shadow-sm);
+          transition: border-color var(--zhimo-transition);
+        }
+        input::-moz-range-thumb {
+          width: 12px;
+          height: 12px;
+          border-radius: 50%;
+          background: #fff;
+          border: 1px solid var(--zhimo-border-strong);
+          box-shadow: var(--zhimo-shadow-sm);
+        }
+        input:hover::-webkit-slider-thumb { border-color: var(--zhimo-seal); }
+        input:hover::-moz-range-thumb { border-color: var(--zhimo-seal); }
+        input:focus-visible { outline: none; }
+        input:focus-visible::-webkit-slider-thumb { box-shadow: var(--zhimo-focus-ring); }
+        input:focus-visible::-moz-range-thumb { box-shadow: var(--zhimo-focus-ring); }
+      </style>
+      <input type="range" part="input">
+    `;
+    this._input = this.shadowRoot.querySelector('input');
+    this._input.addEventListener('input', (e) => {
+      e.stopPropagation();
+      this._syncFill();
+      this.dispatchEvent(new CustomEvent('input', {
+        detail: { value: Number(this._input.value) }, bubbles: true, composed: true,
+      }));
+    });
+    this._input.addEventListener('change', (e) => {
+      e.stopPropagation();
+      this.dispatchEvent(new CustomEvent('change', {
+        detail: { value: Number(this._input.value) }, bubbles: true, composed: true,
+      }));
+    });
+  }
+
+  connectedCallback() { this._syncFill(); }
+
+  attributeChangedCallback(name, _old, val) {
+    if (name === 'disabled') this._input.disabled = val !== null;
+    else if (name === 'value') { if (this._input.value !== val) this._input.value = val ?? '0'; }
+    else this._input[name] = val ?? '';
+    this._syncFill();
+  }
+
+  _syncFill() {
+    const min = Number(this._input.min) || 0;
+    const max = Number(this._input.max || 100);
+    const pct = ((Number(this._input.value) - min) / (max - min || 1)) * 100;
+    this._input.style.setProperty('--fill', `${Math.max(0, Math.min(100, pct))}%`);
+  }
+
+  get value() { return Number(this._input.value); }
+  set value(v) { this._input.value = String(v); this._syncFill(); }
+}
+
 customElements.define('zhimo-button', ZhimoButton);
 customElements.define('zhimo-input', ZhimoInput);
 customElements.define('zhimo-switch', ZhimoSwitch);
 customElements.define('zhimo-checkbox', ZhimoCheckbox);
+customElements.define('zhimo-slider', ZhimoSlider);

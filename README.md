@@ -46,7 +46,8 @@ python3 -m http.server 8000
 | 组件 | 标签 | 主要属性 / API |
 | --- | --- | --- |
 | 按钮 | `<zhimo-button>` | `variant`: secondary / ghost / danger；`size`: sm / lg；`disabled`、`loading`、`block` |
-| 输入框 | `<zhimo-input>` | `label`、`placeholder`、`type`、`error`、`disabled`；`.value` 读写 |
+| 输入框 | `<zhimo-input>` | `label`、`placeholder`、`type`（含 `textarea` 多行模式 + `rows`）、`error`、`disabled`；`.value` 读写 |
+| 滑块 | `<zhimo-slider>` | `min` / `max` / `step` / `value`、`disabled`；`change` 事件（`e.detail.value`）；`.value` 读写 |
 | 开关 | `<zhimo-switch>` | `checked`、`disabled`；`change` 事件（`e.detail.checked`） |
 | 复选框 | `<zhimo-checkbox>` | 同开关 |
 | 卡片 | `<zhimo-card>` | `hoverable`；插槽：`header` / 默认 / `footer`（空插槽自动隐藏） |
@@ -58,6 +59,8 @@ python3 -m http.server 8000
 | 导航栏 | `<zhimo-navbar>` | 插槽：`brand` / 默认（链接）/ `actions`；吸顶 + 毛玻璃 |
 | 标签页 | `<zhimo-tabs>` + `<zhimo-tab label="...">` | `change` 事件（`e.detail.index / label`）；`.select(i)` |
 | 面包屑 | `<zhimo-breadcrumb>` | 直接放 `<a>` / `<span>`，自动加分隔符，末项高亮 |
+| 下拉菜单 | `<zhimo-dropdown>` + `<zhimo-menu-item value="...">` | 插槽 `trigger` 点击展开；`.openAt(x, y)` 可作右键菜单；`select` 事件（`e.detail.value`）；菜单项支持 `danger` / `disabled` |
+| 选择器 | `<zhimo-select>` + `<zhimo-option value="...">` | `label`、`placeholder`、`value`、`disabled`；`change` 事件（`e.detail.value`）；上下方向键换选项 |
 | 墨染背景 | `<zhimo-ink-paper>` | `image`：背景图地址。内置 Stable Fluids 流体模拟：鼠标滑动把墨和动量注入流场，墨被水流推着卷出涡旋须，蚀开纸面露出背景图；点击是一滴墨砸进水里炸开成环；随时间稀释、纸面复原。放在 `<body>` 内任意位置（固定全屏、不挡交互）；尊重系统的"减少动态效果"设置。手感参数都在 `src/ink.js` 顶部的常量里 |
 
 ## 定制你的风格
@@ -83,10 +86,11 @@ zhimo-ui/
 └── src/
     ├── tokens.css    # 设计令牌（全局变量）
     ├── index.js      # 统一入口，引入即注册全部组件
-    ├── base.js       # 按钮、输入框、开关、复选框
+    ├── base.js       # 按钮、输入框、开关、复选框、滑块
     ├── layout.js     # 卡片、分割线
     ├── feedback.js   # 模态框、Toast、加载、进度条
     ├── nav.js        # 导航栏、标签页、面包屑
+    ├── menu.js       # 下拉菜单、选择器
     └── ink.js        # 墨染背景（GPU 流体模拟，含 CPU 回退）
 ```
 

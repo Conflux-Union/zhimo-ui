@@ -1,0 +1,22 @@
+{
+  "name": "zhimo-ui",
+  "version": "0.1.0",
+  "description": "ZhiMo UI - paper-and-ink web components with a single seal-red accent",
+  "main": "src/index.js",
+  "exports": {
+    ".": "./src/index.js",
+    "./tokens.css": "./src/tokens.css"
+  },
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "node test/prefix-contract.test.js && node test/ink-rendering-contract.test.js"
+  },
+  "keywords": [
+    "web-components",
+    "design-system",
+    "ink"
+  ],
+  "license": "MIT"
+}
