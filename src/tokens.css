@@ -6,69 +6,69 @@
    ============================================ */
 
 :root {
-  --my-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
+  --zhimo-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC",
     "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
-  --my-font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC",
+  --zhimo-font-serif: "Songti SC", "Noto Serif SC", "Noto Serif CJK SC",
     "Source Han Serif SC", "SimSun", Georgia, "Times New Roman", serif;
 
   /* 纸与墨 */
-  --my-bg: #faf7f0;
-  --my-bg-subtle: #f3eee1;
-  --my-bg-hover: #eee8d8;
-  --my-fg: #1a1714;
-  --my-fg-muted: #7a7265;
-  --my-border: #e0d9c8;
-  --my-border-strong: #c6bca6;
+  --zhimo-bg: #faf7f0;
+  --zhimo-bg-subtle: #f3eee1;
+  --zhimo-bg-hover: #eee8d8;
+  --zhimo-fg: #1a1714;
+  --zhimo-fg-muted: #7a7265;
+  --zhimo-border: #e0d9c8;
+  --zhimo-border-strong: #c6bca6;
 
   /* 墨色：实心按钮等主操作 */
-  --my-accent: #1a1714;
-  --my-accent-hover: #3a342c;
-  --my-accent-fg: #faf7f0;
+  --zhimo-accent: #1a1714;
+  --zhimo-accent-hover: #3a342c;
+  --zhimo-accent-fg: #faf7f0;
 
   /* 朱砂印章红：全局唯一强调色 */
-  --my-seal: #b8432f;
-  --my-seal-hover: #a03a28;
+  --zhimo-seal: #b8432f;
+  --zhimo-seal-hover: #a03a28;
 
-  --my-danger: #9e2f1c;
-  --my-success: #4a6741;
-  --my-warning: #b07d2e;
+  --zhimo-danger: #9e2f1c;
+  --zhimo-success: #4a6741;
+  --zhimo-warning: #b07d2e;
 
   /* 形状与阴影：印刷品棱角分明，几乎不用阴影 */
-  --my-radius: 4px;
-  --my-radius-sm: 2px;
-  --my-radius-full: 9999px;
-  --my-shadow-sm: 0 1px 2px rgba(26, 23, 20, 0.06);
-  --my-shadow-md: 0 2px 10px rgba(26, 23, 20, 0.1);
-  --my-shadow-lg: 0 12px 40px rgba(26, 23, 20, 0.18);
-  --my-focus-ring: 0 0 0 3px rgba(184, 67, 47, 0.22);
+  --zhimo-radius: 4px;
+  --zhimo-radius-sm: 2px;
+  --zhimo-radius-full: 9999px;
+  --zhimo-shadow-sm: 0 1px 2px rgba(26, 23, 20, 0.06);
+  --zhimo-shadow-md: 0 2px 10px rgba(26, 23, 20, 0.1);
+  --zhimo-shadow-lg: 0 12px 40px rgba(26, 23, 20, 0.18);
+  --zhimo-focus-ring: 0 0 0 3px rgba(184, 67, 47, 0.22);
 
   /* 动效 */
-  --my-transition: 180ms ease;
+  --zhimo-transition: 180ms ease;
 }
 
 /* 夜读模式：深茶色纸，不是冷冰冰的纯黑 */
 [data-theme="dark"] {
-  --my-bg: #16140f;
-  --my-bg-subtle: #1d1a14;
-  --my-bg-hover: #282318;
-  --my-fg: #e8e2d4;
-  --my-fg-muted: #968d7c;
-  --my-border: #353023;
-  --my-border-strong: #4d4634;
+  --zhimo-bg: #16140f;
+  --zhimo-bg-subtle: #1d1a14;
+  --zhimo-bg-hover: #282318;
+  --zhimo-fg: #e8e2d4;
+  --zhimo-fg-muted: #968d7c;
+  --zhimo-border: #353023;
+  --zhimo-border-strong: #4d4634;
 
-  --my-accent: #e8e2d4;
-  --my-accent-hover: #d6cfbf;
-  --my-accent-fg: #16140f;
+  --zhimo-accent: #e8e2d4;
+  --zhimo-accent-hover: #d6cfbf;
+  --zhimo-accent-fg: #16140f;
 
-  --my-seal: #d96a52;
-  --my-seal-hover: #e07e68;
+  --zhimo-seal: #d96a52;
+  --zhimo-seal-hover: #e07e68;
 
-  --my-danger: #d96a52;
-  --my-success: #7d9a72;
-  --my-warning: #cfa050;
+  --zhimo-danger: #d96a52;
+  --zhimo-success: #7d9a72;
+  --zhimo-warning: #cfa050;
 
-  --my-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-  --my-shadow-md: 0 2px 10px rgba(0, 0, 0, 0.5);
-  --my-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
-  --my-focus-ring: 0 0 0 3px rgba(217, 106, 82, 0.28);
+  --zhimo-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --zhimo-shadow-md: 0 2px 10px rgba(0, 0, 0, 0.5);
+  --zhimo-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
+  --zhimo-focus-ring: 0 0 0 3px rgba(217, 106, 82, 0.28);
 }

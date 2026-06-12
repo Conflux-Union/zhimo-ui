@@ -1,6 +1,6 @@
-/* ZhiMo UI 基础组件：my-button / my-input / my-switch / my-checkbox */
+/* ZhiMo UI 基础组件：zhimo-button / zhimo-input / zhimo-switch / zhimo-checkbox */
 
-class MyButton extends HTMLElement {
+class ZhimoButton extends HTMLElement {
   static observedAttributes = ['disabled', 'loading'];
 
   constructor() {
@@ -13,7 +13,7 @@ class MyButton extends HTMLElement {
         :host([disabled]), :host([loading]) { pointer-events: none; }
 
         button {
-          font-family: var(--my-font);
+          font-family: var(--zhimo-font);
           font-size: 14px;
           font-weight: 500;
           line-height: 1;
@@ -25,50 +25,50 @@ class MyButton extends HTMLElement {
           box-sizing: border-box;
           height: 36px;
           padding: 0 16px;
-          border: 1px solid var(--my-accent);
-          border-radius: var(--my-radius-sm);
-          background: var(--my-accent);
-          color: var(--my-accent-fg);
+          border: 1px solid var(--zhimo-accent);
+          border-radius: var(--zhimo-radius-sm);
+          background: var(--zhimo-accent);
+          color: var(--zhimo-accent-fg);
           cursor: pointer;
-          transition: background var(--my-transition), border-color var(--my-transition),
-                      color var(--my-transition), box-shadow var(--my-transition);
+          transition: background var(--zhimo-transition), border-color var(--zhimo-transition),
+                      color var(--zhimo-transition), box-shadow var(--zhimo-transition);
         }
-        button:hover { background: var(--my-accent-hover); border-color: var(--my-accent-hover); }
-        button:focus-visible { outline: none; box-shadow: var(--my-focus-ring); }
+        button:hover { background: var(--zhimo-accent-hover); border-color: var(--zhimo-accent-hover); }
+        button:focus-visible { outline: none; box-shadow: var(--zhimo-focus-ring); }
         button:active { transform: translateY(0.5px); }
 
         :host([variant="secondary"]) button {
           background: transparent;
-          border-color: var(--my-fg);
-          color: var(--my-fg);
+          border-color: var(--zhimo-fg);
+          color: var(--zhimo-fg);
         }
         :host([variant="secondary"]) button:hover {
-          background: var(--my-bg-hover);
+          background: var(--zhimo-bg-hover);
         }
 
         /* 幽灵按钮：hover 时朱砂下划线从左游走出来 */
         :host([variant="ghost"]) button {
-          background: linear-gradient(var(--my-seal), var(--my-seal)) no-repeat;
+          background: linear-gradient(var(--zhimo-seal), var(--zhimo-seal)) no-repeat;
           background-size: 0% 1px;
           background-position: 16px calc(100% - 7px);
           border-color: transparent;
-          color: var(--my-fg-muted);
-          transition: background-size var(--my-transition), color var(--my-transition);
+          color: var(--zhimo-fg-muted);
+          transition: background-size var(--zhimo-transition), color var(--zhimo-transition);
         }
         :host([variant="ghost"]) button:hover {
           background-size: calc(100% - 32px) 1px;
-          color: var(--my-fg);
+          color: var(--zhimo-fg);
         }
 
         :host([variant="danger"]) button {
-          background: var(--my-danger);
-          border-color: var(--my-danger);
+          background: var(--zhimo-danger);
+          border-color: var(--zhimo-danger);
           color: #fff;
         }
         :host([variant="danger"]) button:hover { filter: brightness(1.08); }
 
         :host([size="sm"]) button { height: 30px; padding: 0 12px; font-size: 13px; }
-        :host([size="lg"]) button { height: 44px; padding: 0 22px; font-size: 15px; border-radius: var(--my-radius); }
+        :host([size="lg"]) button { height: 44px; padding: 0 22px; font-size: 15px; border-radius: var(--zhimo-radius); }
 
         :host([disabled]) button { opacity: 0.5; cursor: not-allowed; }
 
@@ -80,10 +80,10 @@ class MyButton extends HTMLElement {
           border: 2px solid currentColor;
           border-top-color: transparent;
           border-radius: 50%;
-          animation: my-spin 0.6s linear infinite;
+          animation: zhimo-spin 0.6s linear infinite;
         }
         :host([loading]) .spinner { display: inline-block; }
-        @keyframes my-spin { to { transform: rotate(360deg); } }
+        @keyframes zhimo-spin { to { transform: rotate(360deg); } }
       </style>
       <button part="button"><span class="spinner"></span><slot></slot></button>
     `;
@@ -95,7 +95,7 @@ class MyButton extends HTMLElement {
   }
 }
 
-class MyInput extends HTMLElement {
+class ZhimoInput extends HTMLElement {
   static observedAttributes = ['label', 'placeholder', 'type', 'disabled', 'error', 'value'];
 
   constructor() {
@@ -103,13 +103,13 @@ class MyInput extends HTMLElement {
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.innerHTML = `
       <style>
-        :host { display: block; font-family: var(--my-font); }
+        :host { display: block; font-family: var(--zhimo-font); }
         label {
           display: block;
-          font-family: var(--my-font-serif);
+          font-family: var(--zhimo-font-serif);
           font-size: 13px;
           font-weight: 600;
-          color: var(--my-fg);
+          color: var(--zhimo-fg);
           margin-bottom: 4px;
         }
         label:empty { display: none; }
@@ -121,24 +121,24 @@ class MyInput extends HTMLElement {
           box-sizing: border-box;
           height: 34px;
           padding: 0 2px;
-          color: var(--my-fg);
+          color: var(--zhimo-fg);
           background: transparent;
           border: none;
-          border-bottom: 1px solid var(--my-border-strong);
+          border-bottom: 1px solid var(--zhimo-border-strong);
           border-radius: 0;
-          transition: border-color var(--my-transition), box-shadow var(--my-transition);
+          transition: border-color var(--zhimo-transition), box-shadow var(--zhimo-transition);
         }
-        input::placeholder { color: var(--my-fg-muted); }
-        input:hover:not(:disabled) { border-bottom-color: var(--my-fg); }
+        input::placeholder { color: var(--zhimo-fg-muted); }
+        input:hover:not(:disabled) { border-bottom-color: var(--zhimo-fg); }
         input:focus {
           outline: none;
-          border-bottom-color: var(--my-seal);
-          box-shadow: 0 1px 0 var(--my-seal);
+          border-bottom-color: var(--zhimo-seal);
+          box-shadow: 0 1px 0 var(--zhimo-seal);
         }
-        input:disabled { color: var(--my-fg-muted); border-bottom-style: dashed; cursor: not-allowed; }
-        :host([error]) input { border-bottom-color: var(--my-danger); }
-        :host([error]) input:focus { box-shadow: 0 1px 0 var(--my-danger); }
-        .error { font-size: 12px; color: var(--my-danger); margin-top: 6px; }
+        input:disabled { color: var(--zhimo-fg-muted); border-bottom-style: dashed; cursor: not-allowed; }
+        :host([error]) input { border-bottom-color: var(--zhimo-danger); }
+        :host([error]) input:focus { box-shadow: 0 1px 0 var(--zhimo-danger); }
+        .error { font-size: 12px; color: var(--zhimo-danger); margin-top: 6px; }
         .error:empty { display: none; }
       </style>
       <label part="label"></label>
@@ -167,7 +167,7 @@ class MyInput extends HTMLElement {
   focus() { this._input.focus(); }
 }
 
-class MySwitch extends HTMLElement {
+class ZhimoSwitch extends HTMLElement {
   static observedAttributes = ['checked', 'disabled'];
 
   constructor() {
@@ -179,9 +179,9 @@ class MySwitch extends HTMLElement {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          font-family: var(--my-font);
+          font-family: var(--zhimo-font);
           font-size: 14px;
-          color: var(--my-fg);
+          color: var(--zhimo-fg);
           cursor: pointer;
           user-select: none;
         }
@@ -191,9 +191,9 @@ class MySwitch extends HTMLElement {
           flex: none;
           width: 36px;
           height: 20px;
-          border-radius: var(--my-radius-full);
-          background: var(--my-border-strong);
-          transition: background var(--my-transition);
+          border-radius: var(--zhimo-radius-full);
+          background: var(--zhimo-border-strong);
+          transition: background var(--zhimo-transition);
         }
         .thumb {
           position: absolute;
@@ -203,13 +203,13 @@ class MySwitch extends HTMLElement {
           height: 16px;
           border-radius: 50%;
           background: #fff;
-          box-shadow: var(--my-shadow-sm);
-          transition: transform var(--my-transition), background var(--my-transition);
+          box-shadow: var(--zhimo-shadow-sm);
+          transition: transform var(--zhimo-transition), background var(--zhimo-transition);
         }
-        :host([checked]) .track { background: var(--my-seal); }
+        :host([checked]) .track { background: var(--zhimo-seal); }
         :host([checked]) .thumb { transform: translateX(16px); }
         :host(:focus-visible) { outline: none; }
-        :host(:focus-visible) .track { box-shadow: var(--my-focus-ring); }
+        :host(:focus-visible) .track { box-shadow: var(--zhimo-focus-ring); }
       </style>
       <span class="track" part="track"><span class="thumb" part="thumb"></span></span><slot></slot>
     `;
@@ -247,7 +247,7 @@ class MySwitch extends HTMLElement {
   set checked(v) { this.toggleAttribute('checked', Boolean(v)); }
 }
 
-class MyCheckbox extends HTMLElement {
+class ZhimoCheckbox extends HTMLElement {
   static observedAttributes = ['checked', 'disabled'];
 
   constructor() {
@@ -259,9 +259,9 @@ class MyCheckbox extends HTMLElement {
           display: inline-flex;
           align-items: center;
           gap: 8px;
-          font-family: var(--my-font);
+          font-family: var(--zhimo-font);
           font-size: 14px;
-          color: var(--my-fg);
+          color: var(--zhimo-fg);
           cursor: pointer;
           user-select: none;
         }
@@ -274,16 +274,16 @@ class MyCheckbox extends HTMLElement {
           width: 16px;
           height: 16px;
           box-sizing: border-box;
-          border: 1px solid var(--my-border-strong);
-          border-radius: var(--my-radius-sm);
+          border: 1px solid var(--zhimo-border-strong);
+          border-radius: var(--zhimo-radius-sm);
           background: transparent;
-          transition: background var(--my-transition), border-color var(--my-transition);
+          transition: background var(--zhimo-transition), border-color var(--zhimo-transition);
         }
-        svg { width: 10px; height: 10px; stroke: #fff; stroke-width: 3; fill: none; opacity: 0; transition: opacity var(--my-transition); }
-        :host([checked]) .box { background: var(--my-seal); border-color: var(--my-seal); }
+        svg { width: 10px; height: 10px; stroke: #fff; stroke-width: 3; fill: none; opacity: 0; transition: opacity var(--zhimo-transition); }
+        :host([checked]) .box { background: var(--zhimo-seal); border-color: var(--zhimo-seal); }
         :host([checked]) svg { opacity: 1; }
         :host(:focus-visible) { outline: none; }
-        :host(:focus-visible) .box { box-shadow: var(--my-focus-ring); }
+        :host(:focus-visible) .box { box-shadow: var(--zhimo-focus-ring); }
       </style>
       <span class="box" part="box"><svg viewBox="0 0 12 12"><polyline points="2,6 5,9 10,3"/></svg></span><slot></slot>
     `;
@@ -321,7 +321,7 @@ class MyCheckbox extends HTMLElement {
   set checked(v) { this.toggleAttribute('checked', Boolean(v)); }
 }
 
-customElements.define('my-button', MyButton);
-customElements.define('my-input', MyInput);
-customElements.define('my-switch', MySwitch);
-customElements.define('my-checkbox', MyCheckbox);
+customElements.define('zhimo-button', ZhimoButton);
+customElements.define('zhimo-input', ZhimoInput);
+customElements.define('zhimo-switch', ZhimoSwitch);
+customElements.define('zhimo-checkbox', ZhimoCheckbox);

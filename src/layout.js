@@ -1,6 +1,6 @@
-/* ZhiMo UI 布局组件：my-card / my-divider */
+/* ZhiMo UI 布局组件：zhimo-card / zhimo-divider */
 
-class MyCard extends HTMLElement {
+class ZhimoCard extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -8,41 +8,41 @@ class MyCard extends HTMLElement {
       <style>
         :host {
           display: block;
-          font-family: var(--my-font);
-          background: var(--my-bg);
-          border: 1px solid var(--my-border);
-          border-radius: var(--my-radius);
+          font-family: var(--zhimo-font);
+          background: var(--zhimo-bg);
+          border: 1px solid var(--zhimo-border);
+          border-radius: var(--zhimo-radius);
           box-shadow: none;
           overflow: hidden;
-          transition: box-shadow var(--my-transition), border-color var(--my-transition),
-                      transform var(--my-transition);
+          transition: box-shadow var(--zhimo-transition), border-color var(--zhimo-transition),
+                      transform var(--zhimo-transition);
         }
         :host([hoverable]:hover) {
-          box-shadow: var(--my-shadow-md);
-          border-color: var(--my-fg);
+          box-shadow: var(--zhimo-shadow-md);
+          border-color: var(--zhimo-fg);
           transform: translateY(-1px);
         }
         header {
           padding: 14px 18px;
-          border-bottom: 1px solid var(--my-border);
-          font-family: var(--my-font-serif);
+          border-bottom: 1px solid var(--zhimo-border);
+          font-family: var(--zhimo-font-serif);
           font-size: 15px;
           font-weight: 600;
-          color: var(--my-fg);
+          color: var(--zhimo-fg);
         }
         .body {
           padding: 18px;
           font-size: 14px;
           line-height: 1.6;
-          color: var(--my-fg);
+          color: var(--zhimo-fg);
         }
         footer {
           display: flex;
           justify-content: flex-end;
           gap: 8px;
           padding: 12px 18px;
-          border-top: 1px solid var(--my-border);
-          background: var(--my-bg-subtle);
+          border-top: 1px solid var(--zhimo-border);
+          background: var(--zhimo-bg-subtle);
         }
         header[hidden], footer[hidden] { display: none; }
       </style>
@@ -61,7 +61,7 @@ class MyCard extends HTMLElement {
   }
 }
 
-class MyDivider extends HTMLElement {
+class ZhimoDivider extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -72,22 +72,22 @@ class MyDivider extends HTMLElement {
           align-items: center;
           gap: 12px;
           margin: 16px 0;
-          font-family: var(--my-font-serif);
+          font-family: var(--zhimo-font-serif);
           font-size: 13px;
-          color: var(--my-fg-muted);
+          color: var(--zhimo-fg-muted);
         }
         :host::before, :host::after {
           content: '';
           flex: 1;
           height: 1px;
-          background: var(--my-border-strong);
+          background: var(--zhimo-border-strong);
         }
-        .mark { color: var(--my-seal); font-size: 8px; line-height: 1; }
+        .mark { color: var(--zhimo-seal); font-size: 8px; line-height: 1; }
       </style>
       <slot><span class="mark">◆</span></slot>
     `;
   }
 }
 
-customElements.define('my-card', MyCard);
-customElements.define('my-divider', MyDivider);
+customElements.define('zhimo-card', ZhimoCard);
+customElements.define('zhimo-divider', ZhimoDivider);

@@ -9,20 +9,20 @@
   <style>
     * { margin: 0; }
     body {
-      font-family: var(--my-font);
-      background: var(--my-bg);
-      color: var(--my-fg);
+      font-family: var(--zhimo-font);
+      background: var(--zhimo-bg);
+      color: var(--zhimo-fg);
       transition: background 200ms ease, color 200ms ease;
     }
     main { max-width: 880px; margin: 0 auto; padding: 40px 24px 120px; }
-    h1 { font-family: var(--my-font-serif); font-size: 30px; letter-spacing: 0.5px; margin-bottom: 8px; }
-    .subtitle { color: var(--my-fg-muted); font-size: 15px; margin-bottom: 48px; }
+    h1 { font-family: var(--zhimo-font-serif); font-size: 30px; letter-spacing: 0.5px; margin-bottom: 8px; }
+    .subtitle { color: var(--zhimo-fg-muted); font-size: 15px; margin-bottom: 48px; }
     h2 {
-      font-family: var(--my-font-serif);
+      font-family: var(--zhimo-font-serif);
       font-size: 19px;
       margin: 56px 0 20px;
       padding-bottom: 10px;
-      border-bottom: 1px solid var(--my-border-strong);
+      border-bottom: 1px solid var(--zhimo-border-strong);
     }
     h2::before {
       content: '';
@@ -30,116 +30,116 @@
       width: 9px;
       height: 9px;
       margin-right: 10px;
-      background: var(--my-seal);
+      background: var(--zhimo-seal);
     }
     .row { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; margin-bottom: 16px; }
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; }
-    .muted { color: var(--my-fg-muted); font-size: 13px; }
+    .muted { color: var(--zhimo-fg-muted); font-size: 13px; }
   </style>
 </head>
 <body>
 
   <!-- 墨染背景：鼠标滑过时墨水蚀开纸面，露出底下的背景图 -->
-  <my-ink-paper image="assets/bg.svg"></my-ink-paper>
+  <zhimo-ink-paper image="assets/bg.svg"></zhimo-ink-paper>
 
-  <my-navbar>
+  <zhimo-navbar>
     <span slot="brand">◆ 纸墨</span>
     <a href="#buttons">基础</a>
     <a href="#layout">布局</a>
     <a href="#feedback">反馈</a>
     <a href="#nav">导航</a>
-    <my-switch slot="actions" id="theme-switch">夜读</my-switch>
-  </my-navbar>
+    <zhimo-switch slot="actions" id="theme-switch">夜读</zhimo-switch>
+  </zhimo-navbar>
 
   <main>
     <h1>纸墨 ZhiMo UI</h1>
     <p class="subtitle">纸张与油墨 · 编辑部风格 · Web Components · 零依赖</p>
 
-    <h2 id="buttons">按钮 my-button</h2>
+    <h2 id="buttons">按钮 zhimo-button</h2>
     <div class="row">
-      <my-button>主要按钮</my-button>
-      <my-button variant="secondary">次要按钮</my-button>
-      <my-button variant="ghost">幽灵按钮</my-button>
-      <my-button variant="danger">危险按钮</my-button>
+      <zhimo-button>主要按钮</zhimo-button>
+      <zhimo-button variant="secondary">次要按钮</zhimo-button>
+      <zhimo-button variant="ghost">幽灵按钮</zhimo-button>
+      <zhimo-button variant="danger">危险按钮</zhimo-button>
     </div>
     <div class="row">
-      <my-button size="sm">小尺寸</my-button>
-      <my-button size="lg">大尺寸</my-button>
-      <my-button loading>加载中</my-button>
-      <my-button disabled>已禁用</my-button>
+      <zhimo-button size="sm">小尺寸</zhimo-button>
+      <zhimo-button size="lg">大尺寸</zhimo-button>
+      <zhimo-button loading>加载中</zhimo-button>
+      <zhimo-button disabled>已禁用</zhimo-button>
     </div>
 
-    <h2>输入框 my-input</h2>
+    <h2>输入框 zhimo-input</h2>
     <div class="grid">
-      <my-input label="用户名" placeholder="请输入用户名"></my-input>
-      <my-input label="密码" type="password" placeholder="请输入密码"></my-input>
-      <my-input label="邮箱" placeholder="name@example.com" error="邮箱格式不正确"></my-input>
-      <my-input label="禁用状态" placeholder="不可编辑" disabled></my-input>
+      <zhimo-input label="用户名" placeholder="请输入用户名"></zhimo-input>
+      <zhimo-input label="密码" type="password" placeholder="请输入密码"></zhimo-input>
+      <zhimo-input label="邮箱" placeholder="name@example.com" error="邮箱格式不正确"></zhimo-input>
+      <zhimo-input label="禁用状态" placeholder="不可编辑" disabled></zhimo-input>
     </div>
 
     <h2>开关与复选框</h2>
     <div class="row">
-      <my-switch checked>接收通知</my-switch>
-      <my-switch>自动更新</my-switch>
-      <my-switch disabled>禁用项</my-switch>
+      <zhimo-switch checked>接收通知</zhimo-switch>
+      <zhimo-switch>自动更新</zhimo-switch>
+      <zhimo-switch disabled>禁用项</zhimo-switch>
     </div>
     <div class="row">
-      <my-checkbox checked>记住我</my-checkbox>
-      <my-checkbox>同意服务条款</my-checkbox>
-      <my-checkbox disabled>禁用项</my-checkbox>
+      <zhimo-checkbox checked>记住我</zhimo-checkbox>
+      <zhimo-checkbox>同意服务条款</zhimo-checkbox>
+      <zhimo-checkbox disabled>禁用项</zhimo-checkbox>
     </div>
 
-    <h2 id="layout">卡片 my-card 与分割线 my-divider</h2>
+    <h2 id="layout">卡片 zhimo-card 与分割线 zhimo-divider</h2>
     <div class="grid">
-      <my-card hoverable>
+      <zhimo-card hoverable>
         <span slot="header">项目概览</span>
         这是一张完整卡片：带标题栏、内容区和底部操作区。鼠标悬停时有轻微上浮效果。
-        <my-button slot="footer" variant="secondary" size="sm">取消</my-button>
-        <my-button slot="footer" size="sm">确认</my-button>
-      </my-card>
-      <my-card>
+        <zhimo-button slot="footer" variant="secondary" size="sm">取消</zhimo-button>
+        <zhimo-button slot="footer" size="sm">确认</zhimo-button>
+      </zhimo-card>
+      <zhimo-card>
         只有内容区的简单卡片。header 和 footer 插槽为空时会自动隐藏，不会留下多余的边框。
-      </my-card>
+      </zhimo-card>
     </div>
-    <my-divider>或者</my-divider>
-    <my-divider></my-divider>
+    <zhimo-divider>或者</zhimo-divider>
+    <zhimo-divider></zhimo-divider>
 
     <h2 id="feedback">反馈组件</h2>
     <div class="row">
-      <my-button id="open-modal" variant="secondary">打开模态框</my-button>
-      <my-button id="toast-default" variant="secondary">默认 Toast</my-button>
-      <my-button id="toast-success" variant="secondary">成功 Toast</my-button>
-      <my-button id="toast-error" variant="secondary">错误 Toast</my-button>
+      <zhimo-button id="open-modal" variant="secondary">打开模态框</zhimo-button>
+      <zhimo-button id="toast-default" variant="secondary">默认 Toast</zhimo-button>
+      <zhimo-button id="toast-success" variant="secondary">成功 Toast</zhimo-button>
+      <zhimo-button id="toast-error" variant="secondary">错误 Toast</zhimo-button>
     </div>
     <div class="row">
-      <my-spinner size="sm"></my-spinner>
-      <my-spinner></my-spinner>
-      <my-spinner size="lg"></my-spinner>
-      <span class="muted">my-spinner 三种尺寸</span>
+      <zhimo-spinner size="sm"></zhimo-spinner>
+      <zhimo-spinner></zhimo-spinner>
+      <zhimo-spinner size="lg"></zhimo-spinner>
+      <span class="muted">zhimo-spinner 三种尺寸</span>
     </div>
     <div style="max-width: 420px; display: grid; gap: 14px;">
-      <my-progress id="demo-progress" value="30"></my-progress>
-      <my-progress indeterminate></my-progress>
+      <zhimo-progress id="demo-progress" value="30"></zhimo-progress>
+      <zhimo-progress indeterminate></zhimo-progress>
     </div>
 
-    <my-modal id="modal" heading="确认操作">
+    <zhimo-modal id="modal" heading="确认操作">
       这是一个模态框。支持点击遮罩、右上角关闭按钮或按 Esc 键关闭，打开期间页面滚动会被锁定。
-      <my-button slot="footer" variant="secondary" size="sm" id="modal-cancel">取消</my-button>
-      <my-button slot="footer" size="sm" id="modal-ok">确认</my-button>
-    </my-modal>
+      <zhimo-button slot="footer" variant="secondary" size="sm" id="modal-cancel">取消</zhimo-button>
+      <zhimo-button slot="footer" size="sm" id="modal-ok">确认</zhimo-button>
+    </zhimo-modal>
 
     <h2 id="nav">导航组件</h2>
-    <my-breadcrumb style="margin-bottom: 24px;">
+    <zhimo-breadcrumb style="margin-bottom: 24px;">
       <a href="#">首页</a>
       <a href="#">组件</a>
       <span>导航</span>
-    </my-breadcrumb>
+    </zhimo-breadcrumb>
 
-    <my-tabs>
-      <my-tab label="介绍">纸墨 ZhiMo UI 是一套个人风格的 Web Components 组件库，零依赖，可直接在任何页面中使用。</my-tab>
-      <my-tab label="安装">复制 src 目录到你的项目，引入 tokens.css 和 index.js 即可。</my-tab>
-      <my-tab label="定制">修改 tokens.css 中的设计令牌（颜色、圆角、阴影），所有组件会同步更新。</my-tab>
-    </my-tabs>
+    <zhimo-tabs>
+      <zhimo-tab label="介绍">纸墨 ZhiMo UI 是一套个人风格的 Web Components 组件库，零依赖，可直接在任何页面中使用。</zhimo-tab>
+      <zhimo-tab label="安装">复制 src 目录到你的项目，引入 tokens.css 和 index.js 即可。</zhimo-tab>
+      <zhimo-tab label="定制">修改 tokens.css 中的设计令牌（颜色、圆角、阴影），所有组件会同步更新。</zhimo-tab>
+    </zhimo-tabs>
   </main>
 
   <script type="module">

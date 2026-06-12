@@ -1,6 +1,6 @@
-/* ZhiMo UI 导航组件：my-navbar / my-tabs + my-tab / my-breadcrumb */
+/* ZhiMo UI 导航组件：zhimo-navbar / zhimo-tabs + zhimo-tab / zhimo-breadcrumb */
 
-class MyNavbar extends HTMLElement {
+class ZhimoNavbar extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -18,26 +18,26 @@ class MyNavbar extends HTMLElement {
           gap: 24px;
           height: 56px;
           padding: 0 24px;
-          border-bottom: 1px solid var(--my-border);
-          background: color-mix(in srgb, var(--my-bg) 85%, transparent);
+          border-bottom: 1px solid var(--zhimo-border);
+          background: color-mix(in srgb, var(--zhimo-bg) 85%, transparent);
           backdrop-filter: blur(10px);
           -webkit-backdrop-filter: blur(10px);
-          font-family: var(--my-font);
+          font-family: var(--zhimo-font);
         }
-        .brand { font-family: var(--my-font-serif); font-size: 16px; font-weight: 700; color: var(--my-fg); }
+        .brand { font-family: var(--zhimo-font-serif); font-size: 16px; font-weight: 700; color: var(--zhimo-fg); }
         .links { display: flex; align-items: center; gap: 4px; flex: 1; }
         /* 朱砂下划线从左游走出来 */
         .links ::slotted(a) {
           font-size: 14px;
-          color: var(--my-fg-muted);
+          color: var(--zhimo-fg-muted);
           text-decoration: none;
           padding: 6px 10px;
-          background: linear-gradient(var(--my-seal), var(--my-seal)) no-repeat;
+          background: linear-gradient(var(--zhimo-seal), var(--zhimo-seal)) no-repeat;
           background-size: 0% 1px;
           background-position: 10px calc(100% - 2px);
-          transition: color var(--my-transition), background-size var(--my-transition);
+          transition: color var(--zhimo-transition), background-size var(--zhimo-transition);
         }
-        .links ::slotted(a:hover) { color: var(--my-fg); background-size: calc(100% - 20px) 1px; }
+        .links ::slotted(a:hover) { color: var(--zhimo-fg); background-size: calc(100% - 20px) 1px; }
         .actions { display: flex; align-items: center; gap: 8px; }
       </style>
       <div class="bar" part="bar">
@@ -49,20 +49,20 @@ class MyNavbar extends HTMLElement {
   }
 }
 
-class MyTabs extends HTMLElement {
+class ZhimoTabs extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.innerHTML = `
       <style>
-        :host { display: block; font-family: var(--my-font); }
+        :host { display: block; font-family: var(--zhimo-font); }
         nav {
           display: flex;
           gap: 4px;
-          border-bottom: 1px solid var(--my-border);
+          border-bottom: 1px solid var(--zhimo-border);
         }
         button {
-          font-family: var(--my-font);
+          font-family: var(--zhimo-font);
           font-size: 14px;
           font-weight: 500;
           background: none;
@@ -70,16 +70,16 @@ class MyTabs extends HTMLElement {
           border-bottom: 2px solid transparent;
           margin-bottom: -1px;
           padding: 10px 14px;
-          color: var(--my-fg-muted);
+          color: var(--zhimo-fg-muted);
           cursor: pointer;
-          transition: color var(--my-transition);
+          transition: color var(--zhimo-transition);
         }
-        button:hover { color: var(--my-fg); }
-        button.active { color: var(--my-fg); border-bottom-color: var(--my-seal); }
+        button:hover { color: var(--zhimo-fg); }
+        button.active { color: var(--zhimo-fg); border-bottom-color: var(--zhimo-seal); }
         button:focus-visible {
           outline: none;
-          box-shadow: var(--my-focus-ring);
-          border-radius: var(--my-radius-sm);
+          box-shadow: var(--zhimo-focus-ring);
+          border-radius: var(--zhimo-radius-sm);
         }
       </style>
       <nav part="list" role="tablist"></nav>
@@ -91,7 +91,7 @@ class MyTabs extends HTMLElement {
   }
 
   _build() {
-    this._tabs = [...this.children].filter((el) => el.tagName === 'MY-TAB');
+    this._tabs = [...this.children].filter((el) => el.tagName === 'ZHIMO-TAB');
     this._nav.innerHTML = '';
     this._tabs.forEach((tab, i) => {
       const btn = document.createElement('button');
@@ -120,7 +120,7 @@ class MyTabs extends HTMLElement {
   }
 }
 
-class MyTab extends HTMLElement {
+class ZhimoTab extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
@@ -131,7 +131,7 @@ class MyTab extends HTMLElement {
           padding: 16px 2px;
           font-size: 14px;
           line-height: 1.6;
-          color: var(--my-fg);
+          color: var(--zhimo-fg);
         }
         :host([hidden]) { display: none; }
       </style>
@@ -140,25 +140,25 @@ class MyTab extends HTMLElement {
   }
 }
 
-class MyBreadcrumb extends HTMLElement {
+class ZhimoBreadcrumb extends HTMLElement {
   constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this.shadowRoot.innerHTML = `
       <style>
-        :host { display: block; font-family: var(--my-font); font-size: 14px; }
+        :host { display: block; font-family: var(--zhimo-font); font-size: 14px; }
         nav { display: flex; align-items: center; flex-wrap: wrap; }
         ::slotted(*) {
-          color: var(--my-fg-muted);
+          color: var(--zhimo-fg-muted);
           text-decoration: none;
-          transition: color var(--my-transition);
+          transition: color var(--zhimo-transition);
         }
-        ::slotted(a:hover) { color: var(--my-fg); }
-        ::slotted(*:last-child) { color: var(--my-fg); font-weight: 500; }
+        ::slotted(a:hover) { color: var(--zhimo-fg); }
+        ::slotted(*:last-child) { color: var(--zhimo-fg); font-weight: 500; }
         ::slotted(*:not(:first-child))::before {
           content: '·';
           margin: 0 10px;
-          color: var(--my-seal);
+          color: var(--zhimo-seal);
           font-weight: 700;
         }
       </style>
@@ -167,7 +167,7 @@ class MyBreadcrumb extends HTMLElement {
   }
 }
 
-customElements.define('my-navbar', MyNavbar);
-customElements.define('my-tabs', MyTabs);
-customElements.define('my-tab', MyTab);
-customElements.define('my-breadcrumb', MyBreadcrumb);
+customElements.define('zhimo-navbar', ZhimoNavbar);
+customElements.define('zhimo-tabs', ZhimoTabs);
+customElements.define('zhimo-tab', ZhimoTab);
+customElements.define('zhimo-breadcrumb', ZhimoBreadcrumb);

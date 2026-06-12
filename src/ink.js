@@ -1,7 +1,7 @@
-/* ZhiMo UI 特效组件：my-ink-paper —— 墨滴入水的背景显影
-   用法：<my-ink-paper image="bg.jpg"></my-ink-paper>
+/* ZhiMo UI 特效组件：zhimo-ink-paper —— 墨滴入水的背景显影
+   用法：<zhimo-ink-paper image="bg.jpg"></zhimo-ink-paper>
 
-   背景图垫在页面最底层，纸面（--my-bg）盖在其上。
+   背景图垫在页面最底层，纸面（--zhimo-bg）盖在其上。
    内部跑一个 Stable Fluids 流体模拟（Jos Stam 算法）：
    鼠标移动把墨和动量一起注入流场，墨被水流推着卷出涡旋须，
    按下鼠标则滴一滴墨（径向外冲的速度场，像墨滴砸进水里炸开），
@@ -619,7 +619,7 @@ class FluidCPU {
    组件
    ============================================================ */
 
-class MyInkPaper extends HTMLElement {
+class ZhimoInkPaper extends HTMLElement {
   static observedAttributes = ['image'];
 
   constructor() {
@@ -694,7 +694,7 @@ class MyInkPaper extends HTMLElement {
 
   _readPaper() {
     const str = getComputedStyle(document.documentElement)
-      .getPropertyValue('--my-bg').trim() || '#faf7f0';
+      .getPropertyValue('--zhimo-bg').trim() || '#faf7f0';
     this._paper = str;
     this._paperRGB = this._parseColor(str);
   }
@@ -823,4 +823,4 @@ class MyInkPaper extends HTMLElement {
   };
 }
 
-customElements.define('my-ink-paper', MyInkPaper);
+customElements.define('zhimo-ink-paper', ZhimoInkPaper);
