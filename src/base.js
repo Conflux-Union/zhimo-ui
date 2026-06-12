@@ -364,58 +364,53 @@ class ZhimoSlider extends HTMLElement {
       <style>
         :host { display: block; }
         :host([disabled]) { opacity: 0.5; pointer-events: none; }
-        /* 细墨线轨道，已划过的部分染成朱砂 */
+        /* 墨线轨道 + 朱砂方印滑块头 */
         input {
           -webkit-appearance: none;
           appearance: none;
           display: block;
           width: 100%;
-          height: 16px;
+          height: 14px;
           margin: 0;
           background: transparent;
           cursor: pointer;
         }
         input::-webkit-slider-runnable-track {
-          height: 4px;
-          border-radius: var(--zhimo-radius-full);
-          background: linear-gradient(var(--zhimo-seal), var(--zhimo-seal)) no-repeat var(--zhimo-bg-hover);
+          height: 1.5px;
+          border-radius: 0;
+          background: linear-gradient(var(--zhimo-seal), var(--zhimo-seal)) no-repeat var(--zhimo-border-strong);
           background-size: var(--fill, 0%) 100%;
-          border: 1px solid var(--zhimo-border);
-          box-sizing: border-box;
         }
         input::-moz-range-track {
-          height: 4px;
-          border-radius: var(--zhimo-radius-full);
-          background: var(--zhimo-bg-hover);
-          border: 1px solid var(--zhimo-border);
-          box-sizing: border-box;
+          height: 1.5px;
+          border-radius: 0;
+          background: var(--zhimo-border-strong);
+          border: none;
         }
         input::-moz-range-progress {
-          height: 4px;
-          border-radius: var(--zhimo-radius-full);
+          height: 1.5px;
+          border-radius: 0;
           background: var(--zhimo-seal);
         }
         input::-webkit-slider-thumb {
           -webkit-appearance: none;
-          width: 14px;
-          height: 14px;
-          margin-top: -6px;
-          border-radius: 50%;
-          background: #fff;
-          border: 1px solid var(--zhimo-border-strong);
-          box-shadow: var(--zhimo-shadow-sm);
-          transition: border-color var(--zhimo-transition);
+          width: 10px;
+          height: 10px;
+          margin-top: -4.5px;
+          border-radius: var(--zhimo-radius-sm);
+          background: var(--zhimo-seal);
+          border: none;
+          transition: background var(--zhimo-transition);
         }
         input::-moz-range-thumb {
-          width: 12px;
-          height: 12px;
-          border-radius: 50%;
-          background: #fff;
-          border: 1px solid var(--zhimo-border-strong);
-          box-shadow: var(--zhimo-shadow-sm);
+          width: 10px;
+          height: 10px;
+          border-radius: var(--zhimo-radius-sm);
+          background: var(--zhimo-seal);
+          border: none;
         }
-        input:hover::-webkit-slider-thumb { border-color: var(--zhimo-seal); }
-        input:hover::-moz-range-thumb { border-color: var(--zhimo-seal); }
+        input:hover::-webkit-slider-thumb { background: var(--zhimo-seal-hover); }
+        input:hover::-moz-range-thumb { background: var(--zhimo-seal-hover); }
         input:focus-visible { outline: none; }
         input:focus-visible::-webkit-slider-thumb { box-shadow: var(--zhimo-focus-ring); }
         input:focus-visible::-moz-range-thumb { box-shadow: var(--zhimo-focus-ring); }
