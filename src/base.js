@@ -1,4 +1,4 @@
-/* ZhiMo UI 基础组件：zhimo-button / zhimo-input / zhimo-switch / zhimo-checkbox / zhimo-slider */
+/* ZhiMo UI 基础组件：zhimo-button / zhimo-button-group / zhimo-input / zhimo-switch / zhimo-checkbox / zhimo-slider */
 
 class ZhimoButton extends HTMLElement {
   static observedAttributes = ['disabled', 'loading'];
@@ -454,8 +454,132 @@ class ZhimoSlider extends HTMLElement {
   set value(v) { this._input.value = String(v); this._syncFill(); }
 }
 
+class ZhimoButtonGroup extends HTMLElement {
+  static observedAttributes = ['value', 'disabled'];
+
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host { display: inline-flex; }
+        :host([block]) { display: flex; }
+        :host([vertical]) { flex-direction: column; }
+        :host([disabled]) { opacity: 0.5; pointer-events: none; }
+        ::slotted(button) {
+          font-family: var(--zhimo-font);
+          font-size: 14px;
+          font-weight: 500;
+          line-height: 1;
+          height: 34px;
+          padding: 0 16px;
+          border: 1px solid var(--zhimo-border-strong);
+          margin-left: -1px;
+          margin-top: 0;
+          border-radius: 0;
+          background: transparent;
+          color: var(--zhimo-fg);
+          cursor: pointer;
+          position: relative;
+          transition: background var(--zhimo-transition), color var(--zhimo-transition),
+                      border-color var(--zhimo-transition);
+        }
+        :host([block]) ::slotted(button) { flex: 1; }
+        :host([vertical]) ::slotted(button) { margin-left: 0; margin-top: -1px; }
+        /* horizontal corners */
+        :host(:not([vertical])) ::slotted(button:first-child) {
+          margin-left: 0;
+          border-radius: var(--zhimo-radius-sm) 0 0 var(--zhimo-radius-sm);
+        }
+        :host(:not([vertical])) ::slotted(button:last-child) {
+          border-radius: 0 var(--zhimo-radius-sm) var(--zhimo-radius-sm) 0;
+        }
+        /* vertical corners */
+        :host([vertical]) ::slotted(button:first-child) {
+          margin-top: 0;
+          border-radius: var(--zhimo-radius-sm) var(--zhimo-radius-sm) 0 0;
+        }
+        :host([vertical]) ::slotted(button:last-child) {
+          border-radius: 0 0 var(--zhimo-radius-sm) var(--zhimo-radius-sm);
+        }
+        ::slotted(button:only-child) { border-radius: var(--zhimo-radius-sm); }
+        ::slotted(button:hover) { background: var(--zhimo-bg-hover); }
+        ::slotted(button[aria-pressed="true"]) {
+          background: var(--zhimo-seal);
+          color: #fff;
+          border-color: var(--zhimo-seal);
+          z-index: 1;
+        }
+        ::slotted(button[aria-pressed="true"]:hover) {
+          background: var(--zhimo-seal-hover);
+          border-color: var(--zhimo-seal-hover);
+        }
+        ::slotted(button:disabled) { color: var(--zhimo-fg-muted); cursor: not-allowed; }
+        ::slotted(button:focus-visible) { outline: none; box-shadow: var(--zhimo-focus-ring); z-index: 2; }
+      </style>
+      <slot></slot>
+    `;
+
+    this.addEventListener('click', (e) => {
+      const btn = e.target.closest('button');
+      if (!btn || btn.disabled) return;
+      const val = btn.getAttribute('value');
+      if (val === this.getAttribute('value')) return;
+      this.setAttribute('value', val);
+      this.dispatchEvent(new CustomEvent('change', {
+        detail: { value: val }, bubbles: true, composed: true,
+      }));
+    });
+  }
+
+  connectedCallback() {
+    this.setAttribute('role', 'group');
+    if (!this.hasAttribute('tabindex')) this.tabIndex = 0;
+    this.addEventListener('keydown', this._onKeydown);
+    this._syncSelection();
+  }
+
+  disconnectedCallback() {
+    this.removeEventListener('keydown', this._onKeydown);
+  }
+
+  attributeChangedCallback(name) {
+    if (name === 'value') this._syncSelection();
+    if (name === 'disabled') this._buttons().forEach((b) => { b.disabled = this.hasAttribute('disabled'); });
+  }
+
+  _buttons() { return [...this.querySelectorAll('button')]; }
+
+  _syncSelection() {
+    const val = this.getAttribute('value');
+    this._buttons().forEach((b) => {
+      b.setAttribute('aria-pressed', String(b.getAttribute('value') === val));
+    });
+  }
+
+  _onKeydown = (e) => {
+    const vert = this.hasAttribute('vertical');
+    const fwd = vert ? 'ArrowDown' : 'ArrowRight';
+    const bwd = vert ? 'ArrowUp' : 'ArrowLeft';
+    if (e.key !== fwd && e.key !== bwd) return;
+    e.preventDefault();
+    const btns = this._buttons().filter((b) => !b.disabled);
+    if (!btns.length) return;
+    const cur = btns.findIndex((b) => b.getAttribute('value') === this.getAttribute('value'));
+    const next = btns[Math.max(0, Math.min(btns.length - 1, cur + (e.key === fwd ? 1 : -1)))];
+    this.setAttribute('value', next.getAttribute('value'));
+    this.dispatchEvent(new CustomEvent('change', {
+      detail: { value: next.getAttribute('value') }, bubbles: true, composed: true,
+    }));
+  };
+
+  get value() { return this.getAttribute('value'); }
+  set value(v) { v == null ? this.removeAttribute('value') : this.setAttribute('value', String(v)); }
+}
+
 customElements.define('zhimo-button', ZhimoButton);
 customElements.define('zhimo-input', ZhimoInput);
 customElements.define('zhimo-switch', ZhimoSwitch);
 customElements.define('zhimo-checkbox', ZhimoCheckbox);
 customElements.define('zhimo-slider', ZhimoSlider);
+customElements.define('zhimo-button-group', ZhimoButtonGroup);

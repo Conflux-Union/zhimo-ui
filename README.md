@@ -46,6 +46,7 @@ python3 -m http.server 8000
 | 组件 | 标签 | 主要属性 / API |
 | --- | --- | --- |
 | 按钮 | `<zhimo-button>` | `variant`: secondary / ghost / danger；`size`: sm / lg；`disabled`、`loading`、`block` |
+| 分段控件 | `<zhimo-button-group>` + `<button value="...">` | `value`、`disabled`、`vertical`（竖排）、`block`（撑满容器）；`change` 事件（`e.detail.value`）；方向键切换；选中项朱砂印填充 |
 | 输入框 | `<zhimo-input>` | `label`、`placeholder`、`type`（含 `textarea` 多行模式 + `rows`）、`error`、`disabled`；`.value` 读写 |
 | 滑块 | `<zhimo-slider>` | `min` / `max` / `step` / `value`、`disabled`；`change` 事件（`e.detail.value`）；`.value` 读写 |
 | 开关 | `<zhimo-switch>` | `checked`、`disabled`；`change` 事件（`e.detail.checked`） |

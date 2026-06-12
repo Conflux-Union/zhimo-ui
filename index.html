@@ -69,6 +69,37 @@
       <zhimo-button disabled>已禁用</zhimo-button>
     </div>
 
+    <h2>分段控件 zhimo-button-group</h2>
+    <div class="row">
+      <zhimo-button-group id="demo-group" value="all">
+        <button value="all">全部</button>
+        <button value="unread">未读</button>
+        <button value="mention">@我</button>
+      </zhimo-button-group>
+      <span class="muted" id="group-value">当前：all</span>
+    </div>
+    <div class="row" style="margin-top: 8px; align-items: flex-start;">
+      <zhimo-button-group value="February">
+        <button value="January">一月</button>
+        <button value="February">二月</button>
+        <button value="March">三月</button>
+        <button value="April">四月</button>
+        <button value="May" disabled>五月</button>
+      </zhimo-button-group>
+      <zhimo-button-group value="design" vertical>
+        <button value="design">设计</button>
+        <button value="develop">开发</button>
+        <button value="test">测试</button>
+      </zhimo-button-group>
+    </div>
+    <div style="max-width: 400px; margin-top: 8px;">
+      <zhimo-button-group value="February" block>
+        <button value="January">一月</button>
+        <button value="February">二月</button>
+        <button value="March">三月</button>
+      </zhimo-button-group>
+    </div>
+
     <h2>输入框 zhimo-input</h2>
     <div class="grid">
       <zhimo-input label="用户名" placeholder="请输入用户名"></zhimo-input>
@@ -190,6 +221,11 @@
     document.getElementById('modal-ok').addEventListener('click', () => {
       modal.close();
       toast('操作已确认', { type: 'success' });
+    });
+
+    // 分段控件
+    document.getElementById('demo-group').addEventListener('change', (e) => {
+      document.getElementById('group-value').textContent = `当前：${e.detail.value}`;
     });
 
     // Toast
