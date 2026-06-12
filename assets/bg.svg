@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1600 900" preserveAspectRatio="xMidYMid slice">
+  <!-- 水墨山水演示背景：远山、朱砂日 -->
+  <defs>
+    <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ece4d2"/>
+      <stop offset="1" stop-color="#cfc4ab"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="900" fill="url(#sky)"/>
+  <circle cx="1180" cy="210" r="64" fill="#b8432f" opacity="0.88"/>
+  <path d="M0 560 Q200 380 420 520 T 900 540 T 1600 470 V900 H0 Z" fill="#8d8474" opacity="0.5"/>
+  <path d="M0 660 Q300 480 560 620 T 1100 640 T 1600 600 V900 H0 Z" fill="#5f574a" opacity="0.65"/>
+  <path d="M0 770 Q400 620 760 740 T 1600 720 V900 H0 Z" fill="#2e2922" opacity="0.82"/>
+</svg>

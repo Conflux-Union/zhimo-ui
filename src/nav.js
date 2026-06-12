@@ -1,0 +1,173 @@
+/* ZhiMo UI 导航组件：my-navbar / my-tabs + my-tab / my-breadcrumb */
+
+class MyNavbar extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host {
+          display: block;
+          position: sticky;
+          top: 0;
+          z-index: 100;
+        }
+        .bar {
+          display: flex;
+          align-items: center;
+          gap: 24px;
+          height: 56px;
+          padding: 0 24px;
+          border-bottom: 1px solid var(--my-border);
+          background: color-mix(in srgb, var(--my-bg) 85%, transparent);
+          backdrop-filter: blur(10px);
+          -webkit-backdrop-filter: blur(10px);
+          font-family: var(--my-font);
+        }
+        .brand { font-family: var(--my-font-serif); font-size: 16px; font-weight: 700; color: var(--my-fg); }
+        .links { display: flex; align-items: center; gap: 4px; flex: 1; }
+        /* 朱砂下划线从左游走出来 */
+        .links ::slotted(a) {
+          font-size: 14px;
+          color: var(--my-fg-muted);
+          text-decoration: none;
+          padding: 6px 10px;
+          background: linear-gradient(var(--my-seal), var(--my-seal)) no-repeat;
+          background-size: 0% 1px;
+          background-position: 10px calc(100% - 2px);
+          transition: color var(--my-transition), background-size var(--my-transition);
+        }
+        .links ::slotted(a:hover) { color: var(--my-fg); background-size: calc(100% - 20px) 1px; }
+        .actions { display: flex; align-items: center; gap: 8px; }
+      </style>
+      <div class="bar" part="bar">
+        <span class="brand" part="brand"><slot name="brand"></slot></span>
+        <nav class="links" part="links"><slot></slot></nav>
+        <div class="actions" part="actions"><slot name="actions"></slot></div>
+      </div>
+    `;
+  }
+}
+
+class MyTabs extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host { display: block; font-family: var(--my-font); }
+        nav {
+          display: flex;
+          gap: 4px;
+          border-bottom: 1px solid var(--my-border);
+        }
+        button {
+          font-family: var(--my-font);
+          font-size: 14px;
+          font-weight: 500;
+          background: none;
+          border: none;
+          border-bottom: 2px solid transparent;
+          margin-bottom: -1px;
+          padding: 10px 14px;
+          color: var(--my-fg-muted);
+          cursor: pointer;
+          transition: color var(--my-transition);
+        }
+        button:hover { color: var(--my-fg); }
+        button.active { color: var(--my-fg); border-bottom-color: var(--my-seal); }
+        button:focus-visible {
+          outline: none;
+          box-shadow: var(--my-focus-ring);
+          border-radius: var(--my-radius-sm);
+        }
+      </style>
+      <nav part="list" role="tablist"></nav>
+      <div part="panels"><slot></slot></div>
+    `;
+    this._nav = this.shadowRoot.querySelector('nav');
+    this._index = 0;
+    this.shadowRoot.querySelector('slot').addEventListener('slotchange', () => this._build());
+  }
+
+  _build() {
+    this._tabs = [...this.children].filter((el) => el.tagName === 'MY-TAB');
+    this._nav.innerHTML = '';
+    this._tabs.forEach((tab, i) => {
+      const btn = document.createElement('button');
+      btn.setAttribute('role', 'tab');
+      btn.textContent = tab.getAttribute('label') ?? `标签 ${i + 1}`;
+      btn.addEventListener('click', () => this.select(i));
+      this._nav.appendChild(btn);
+    });
+    this.select(Math.min(this._index, this._tabs.length - 1), { silent: true });
+  }
+
+  select(index, { silent = false } = {}) {
+    if (!this._tabs?.length || index < 0) return;
+    this._index = index;
+    this._tabs.forEach((tab, i) => { tab.hidden = i !== index; });
+    [...this._nav.children].forEach((btn, i) => {
+      btn.classList.toggle('active', i === index);
+      btn.setAttribute('aria-selected', String(i === index));
+    });
+    if (!silent) {
+      this.dispatchEvent(new CustomEvent('change', {
+        detail: { index, label: this._tabs[index].getAttribute('label') },
+        bubbles: true, composed: true,
+      }));
+    }
+  }
+}
+
+class MyTab extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host {
+          display: block;
+          padding: 16px 2px;
+          font-size: 14px;
+          line-height: 1.6;
+          color: var(--my-fg);
+        }
+        :host([hidden]) { display: none; }
+      </style>
+      <slot></slot>
+    `;
+  }
+}
+
+class MyBreadcrumb extends HTMLElement {
+  constructor() {
+    super();
+    this.attachShadow({ mode: 'open' });
+    this.shadowRoot.innerHTML = `
+      <style>
+        :host { display: block; font-family: var(--my-font); font-size: 14px; }
+        nav { display: flex; align-items: center; flex-wrap: wrap; }
+        ::slotted(*) {
+          color: var(--my-fg-muted);
+          text-decoration: none;
+          transition: color var(--my-transition);
+        }
+        ::slotted(a:hover) { color: var(--my-fg); }
+        ::slotted(*:last-child) { color: var(--my-fg); font-weight: 500; }
+        ::slotted(*:not(:first-child))::before {
+          content: '·';
+          margin: 0 10px;
+          color: var(--my-seal);
+          font-weight: 700;
+        }
+      </style>
+      <nav part="nav" aria-label="面包屑"><slot></slot></nav>
+    `;
+  }
+}
+
+customElements.define('my-navbar', MyNavbar);
+customElements.define('my-tabs', MyTabs);
+customElements.define('my-tab', MyTab);
+customElements.define('my-breadcrumb', MyBreadcrumb);
