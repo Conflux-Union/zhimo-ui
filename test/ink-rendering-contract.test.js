@@ -37,3 +37,18 @@ assert.ok(
   ink.includes('_switchToCPU()'),
   'all exhausted GPU tiers must fall back to the CPU canvas renderer'
 );
+
+assert.ok(
+  ink.includes('const DROP_LOBES = ['),
+  'click drops must use multiple offset lobes instead of a single circular dye splat'
+);
+
+assert.ok(
+  ink.includes('for (const lobe of DROP_LOBES)'),
+  'GPU click drops must render every irregular dye lobe'
+);
+
+assert.ok(
+  ink.includes('_addDropDyeLobe('),
+  'CPU fallback click drops must share the same irregular lobe model'
+);

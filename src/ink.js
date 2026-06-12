@@ -33,6 +33,17 @@ const GPU_SLOW_FRAME_MS = 26;
 const GPU_SLOW_FRAME_LIMIT = 10;
 
 const clamp = (x, lo, hi) => (x < lo ? lo : x > hi ? hi : x);
+const DROP_DYE_RADIUS = 0.6;
+const DROP_LOBES = [
+  { x: 0, y: 0, radius: 0.62, amount: 0.28 },
+  { x: 1.22, y: -0.24, radius: 0.55, amount: 0.25 },
+  { x: -0.94, y: 0.78, radius: 0.42, amount: 0.22 },
+  { x: 0.16, y: 1.28, radius: 0.32, amount: 0.16 },
+  { x: -1.28, y: -0.46, radius: 0.36, amount: 0.18 },
+  { x: 0.78, y: 0.76, radius: 0.28, amount: 0.14 },
+  { x: 1.68, y: 0.1, radius: 0.22, amount: 0.12 },
+  { x: -0.34, y: -1.06, radius: 0.26, amount: 0.12 },
+];
 
 /* ============================================================
    GPU 实现：每个模拟步骤一个 fragment shader
@@ -372,14 +383,23 @@ class InkGL {
     this._blit(this.velocity.write);
     this.velocity.swap();
     const S = this.pSplat;
+    const aspect = this.w / this.h;
+    const dyeRadius = radius * DROP_DYE_RADIUS;
+    const dyeSpread = Math.sqrt(dyeRadius);
     gl.useProgram(S.prog);
-    gl.uniform1f(S.uniforms.uAspect, this.w / this.h);
-    gl.uniform2f(S.uniforms.uPoint, x, y);
-    gl.uniform1i(S.uniforms.uTarget, this._tex(this.dye.read, 0));
-    gl.uniform1f(S.uniforms.uRadius, radius * 0.6);
-    gl.uniform3f(S.uniforms.uValue, amount, 0, 0);
-    this._blit(this.dye.write);
-    this.dye.swap();
+    gl.uniform1f(S.uniforms.uAspect, aspect);
+    for (const lobe of DROP_LOBES) {
+      gl.uniform2f(
+        S.uniforms.uPoint,
+        x + (lobe.x * dyeSpread) / aspect,
+        y + lobe.y * dyeSpread,
+      );
+      gl.uniform1i(S.uniforms.uTarget, this._tex(this.dye.read, 0));
+      gl.uniform1f(S.uniforms.uRadius, dyeRadius * lobe.radius * lobe.radius);
+      gl.uniform3f(S.uniforms.uValue, amount * lobe.amount, 0, 0);
+      this._blit(this.dye.write);
+      this.dye.swap();
+    }
   }
 
   step(paper) {
@@ -515,11 +535,34 @@ class FluidCPU {
         const q = (ox * ox + oy * oy) / r2;
         if (q >= 1) continue;
         const k = i + j * w;
-        d[k] += amount * Math.exp(-5 * q);
         const len = Math.sqrt(ox * ox + oy * oy) + 1e-5;
         const push = strength * Math.exp(-4 * q) * Math.sqrt(q);
         u[k] += (ox / len) * push;
         v[k] += (oy / len) * push;
+      }
+    }
+    for (const lobe of DROP_LOBES) {
+      this._addDropDyeLobe(
+        x + lobe.x * radius,
+        y + lobe.y * radius,
+        radius * lobe.radius,
+        amount * lobe.amount,
+      );
+    }
+  }
+
+  _addDropDyeLobe(x, y, radius, amount) {
+    const { w, h, d } = this;
+    const r2 = radius * radius;
+    const x0 = Math.max(1, Math.floor(x - radius));
+    const x1 = Math.min(w - 2, Math.ceil(x + radius));
+    const y0 = Math.max(1, Math.floor(y - radius));
+    const y1 = Math.min(h - 2, Math.ceil(y + radius));
+    for (let j = y0; j <= y1; j++) {
+      for (let i = x0; i <= x1; i++) {
+        const q = ((i - x) * (i - x) + (j - y) * (j - y)) / r2;
+        if (q >= 1) continue;
+        d[i + j * w] += amount * Math.exp(-5 * q);
       }
     }
   }
