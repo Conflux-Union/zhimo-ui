@@ -7,8 +7,8 @@
    按下鼠标则滴一滴墨（径向外冲的速度场，像墨滴砸进水里炸开），
    墨蚀开纸面露出背景图，随时间稀释后纸面重新合拢。
 
-   默认走 GPU（WebGL2 + 半精度浮点纹理）：墨浓度场跑全窗口分辨率、
-   速度场跑 1/4 分辨率，每个模拟步骤一个 fragment shader。
+   默认走 GPU（WebGL2 + 半精度浮点纹理）：full 档保持全窗口分辨率，
+   驱动或性能撑不住时自动降到较低分辨率档位，每个模拟步骤一个 fragment shader。
    不支持 WebGL2 浮点渲染的环境自动回退到低分辨率 CPU canvas 版本。 */
 
 /* ---------- 手感参数 ---------- */
@@ -24,6 +24,13 @@ const PRESSURE_ITER = 28; // 压力投影的 Jacobi 迭代次数（GPU）
 const REF_SIM_H = 180; // 速度量纲的参考网格高度：速度单位是 texel/帧，
                        // 网格密度改变时所有速度相关常量按 simH/REF_SIM_H 缩放，手感不变
 const INK_CURVE = 2.4; // 浓度→透明度的映射陡度
+const GPU_QUALITY_TIERS = [
+  { name: 'full', scale: 1, pressureIter: PRESSURE_ITER },
+  { name: 'balanced', scale: 0.5, pressureIter: 22 },
+  { name: 'compat', scale: 0.33, pressureIter: 16 },
+];
+const GPU_SLOW_FRAME_MS = 26;
+const GPU_SLOW_FRAME_LIMIT = 10;
 
 const clamp = (x, lo, hi) => (x < lo ? lo : x > hi ? hi : x);
 
@@ -234,7 +241,7 @@ class InkGL {
     }
   }
 
-  constructor(canvas) {
+  constructor(canvas, tierIndex = 0) {
     const gl = canvas.getContext('webgl2', {
       alpha: true, depth: false, stencil: false, antialias: false,
     });
@@ -242,6 +249,8 @@ class InkGL {
       throw new Error('WebGL2 float rendering unsupported');
     }
     this.gl = gl;
+    this.tierIndex = tierIndex;
+    this.tier = GPU_QUALITY_TIERS[tierIndex];
 
     const buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
@@ -266,10 +275,9 @@ class InkGL {
     const gl = this.gl;
     this.w = w;
     this.h = h;
-    // 速度场与墨浓度场同为全分辨率
-    this.simW = w;
-    this.simH = h;
-    // 速度量纲缩放：让不同网格密度下的手感一致
+    const scale = this.tier.scale;
+    this.simW = Math.max(16, Math.round(w * scale));
+    this.simH = Math.max(16, Math.round(h * scale));
     this.velScale = this.simH / REF_SIM_H;
     for (const t of this._targets) {
       gl.deleteTexture(t.tex);
@@ -280,7 +288,7 @@ class InkGL {
     this.pressure = this._double(this.simW, this.simH, gl.R16F, gl.RED, gl.NEAREST);
     this.divergence = this._fbo(this.simW, this.simH, gl.R16F, gl.RED, gl.NEAREST);
     this.curl = this._fbo(this.simW, this.simH, gl.R16F, gl.RED, gl.NEAREST);
-    this.dye = this._double(w, h, gl.R16F, gl.RED, gl.LINEAR);
+    this.dye = this._double(this.simW, this.simH, gl.R16F, gl.RED, gl.LINEAR);
   }
 
   _fbo(w, h, internal, format, filter) {
@@ -296,6 +304,12 @@ class InkGL {
     const fbo = gl.createFramebuffer();
     gl.bindFramebuffer(gl.FRAMEBUFFER, fbo);
     gl.framebufferTexture2D(gl.FRAMEBUFFER, gl.COLOR_ATTACHMENT0, gl.TEXTURE_2D, tex, 0);
+    const status = gl.checkFramebufferStatus(gl.FRAMEBUFFER);
+    if (status !== gl.FRAMEBUFFER_COMPLETE) {
+      gl.deleteTexture(tex);
+      gl.deleteFramebuffer(fbo);
+      throw new Error(`Framebuffer incomplete: ${status}`);
+    }
     gl.viewport(0, 0, w, h);
     gl.clearColor(0, 0, 0, 0);
     gl.clear(gl.COLOR_BUFFER_BIT);
@@ -400,7 +414,7 @@ class InkGL {
     gl.useProgram(P.prog);
     gl.uniform2f(P.uniforms.uTexel, tx, ty);
     gl.uniform1i(P.uniforms.uDivergence, this._tex(this.divergence, 1));
-    for (let i = 0; i < PRESSURE_ITER; i++) {
+    for (let i = 0; i < this.tier.pressureIter; i++) {
       gl.uniform1i(P.uniforms.uPressure, this._tex(this.pressure.read, 0));
       this._blit(this.pressure.write);
       this.pressure.swap();
@@ -438,6 +452,9 @@ class InkGL {
     gl.uniform3f(P.uniforms.uPaper, paper[0], paper[1], paper[2]);
     gl.uniform1i(P.uniforms.uDye, this._tex(this.dye.read, 0));
     this._blit(null);
+    if (gl.isContextLost()) {
+      throw new Error('WebGL context lost');
+    }
   }
 }
 
@@ -657,15 +674,11 @@ class ZhimoInkPaper extends HTMLElement {
 
   connectedCallback() {
     this._still = matchMedia('(prefers-reduced-motion: reduce)').matches;
-
-    if (InkGL.supported()) {
-      this._gl = new InkGL(this._canvas);
-    } else {
-      this._gl = null;
-      this._ctx = this._canvas.getContext('2d');
-      this._low = document.createElement('canvas');
-      this._lctx = this._low.getContext('2d');
-    }
+    this._gl = null;
+    this._usingCPU = false;
+    this._gpuAvailable = InkGL.supported();
+    this._gpuTierIndex = 0;
+    this._slowFrames = 0;
 
     this._readPaper();
     this._themeObserver = new MutationObserver(() => this._readPaper());
@@ -714,25 +727,81 @@ class ZhimoInkPaper extends HTMLElement {
   _resize() {
     const w = window.innerWidth;
     const h = window.innerHeight;
-    if (this._gl) {
-      // 全分辨率（含 dpr，长边上限 2048）
-      const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      const k = Math.min(1, 2048 / (Math.max(w, h) * dpr));
-      this._canvas.width = Math.round(w * dpr * k);
-      this._canvas.height = Math.round(h * dpr * k);
-      this._gl.resize(this._canvas.width, this._canvas.height);
-    } else {
-      this._canvas.width = w;
-      this._canvas.height = h;
-      this._cpuScale = Math.max(4, Math.ceil(Math.sqrt((w * h) / CPU_MAX_CELLS)));
-      const gw = Math.max(16, Math.round(w / this._cpuScale));
-      const gh = Math.max(16, Math.round(h / this._cpuScale));
-      this._fluid = new FluidCPU(gw, gh);
-      this._low.width = gw;
-      this._low.height = gh;
-      this._image = this._lctx.createImageData(gw, gh);
+    if (this._gpuAvailable && !this._usingCPU && this._resizeGpu(w, h, this._gpuTierIndex)) {
+      this._last = null;
+      return;
     }
+    this._switchToCPU();
+    this._resizeCPU(w, h);
     this._last = null;
+  }
+
+  _replaceCanvas() {
+    const canvas = document.createElement('canvas');
+    this._canvas.replaceWith(canvas);
+    this._canvas = canvas;
+  }
+
+  _resizeGpu(w, h, startTier) {
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const k = Math.min(1, 2048 / (Math.max(w, h) * dpr));
+    const cw = Math.round(w * dpr * k);
+    const ch = Math.round(h * dpr * k);
+    for (let tier = startTier; tier < GPU_QUALITY_TIERS.length; tier++) {
+      try {
+        if (!this._gl || this._gl.tierIndex !== tier) {
+          if (this._gl || tier !== startTier) this._replaceCanvas();
+          this._gl = new InkGL(this._canvas, tier);
+        }
+        this._canvas.width = cw;
+        this._canvas.height = ch;
+        this._gl.resize(cw, ch);
+        this._gpuTierIndex = tier;
+        this._slowFrames = 0;
+        return true;
+      } catch {
+        this._gl = null;
+      }
+    }
+    this._gpuAvailable = false;
+    return false;
+  }
+
+  _switchToCPU() {
+    if (!this._usingCPU) {
+      this._replaceCanvas();
+      this._ctx = this._canvas.getContext('2d');
+      this._low = document.createElement('canvas');
+      this._lctx = this._low.getContext('2d');
+      this._usingCPU = true;
+      this._gl = null;
+    }
+  }
+
+  _resizeCPU(w, h) {
+    this._canvas.width = w;
+    this._canvas.height = h;
+    this._cpuScale = Math.max(4, Math.ceil(Math.sqrt((w * h) / CPU_MAX_CELLS)));
+    const gw = Math.max(16, Math.round(w / this._cpuScale));
+    const gh = Math.max(16, Math.round(h / this._cpuScale));
+    this._fluid = new FluidCPU(gw, gh);
+    this._low.width = gw;
+    this._low.height = gh;
+    this._image = this._lctx.createImageData(gw, gh);
+  }
+
+  _downgradeGpu() {
+    const nextTier = (this._gl ? this._gl.tierIndex : this._gpuTierIndex) + 1;
+    this._gl = null;
+    this._gpuTierIndex = nextTier;
+    this._slowFrames = 0;
+    if (nextTier < GPU_QUALITY_TIERS.length) {
+      this._replaceCanvas();
+      if (this._resizeGpu(window.innerWidth, window.innerHeight, nextTier)) return;
+    }
+    this._gpuAvailable = false;
+    this._switchToCPU();
+    this._resizeCPU(window.innerWidth, window.innerHeight);
   }
 
   _pointerMove(x, y) {
@@ -799,7 +868,20 @@ class ZhimoInkPaper extends HTMLElement {
   _tick = () => {
     this._raf = requestAnimationFrame(this._tick);
     if (this._gl) {
-      this._gl.step(this._paperRGB);
+      const t0 = performance.now();
+      try {
+        this._gl.step(this._paperRGB);
+      } catch {
+        this._downgradeGpu();
+        return;
+      }
+      const elapsed = performance.now() - t0;
+      if (elapsed > GPU_SLOW_FRAME_MS && this._gl.tierIndex < GPU_QUALITY_TIERS.length - 1) {
+        this._slowFrames++;
+        if (this._slowFrames >= GPU_SLOW_FRAME_LIMIT) this._downgradeGpu();
+      } else {
+        this._slowFrames = 0;
+      }
       return;
     }
 
