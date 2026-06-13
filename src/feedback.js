@@ -27,7 +27,9 @@ class ZhimoModal extends HTMLElement {
           transform: translate(-50%, -50%);
           width: min(var(--zhimo-modal-width, 480px), calc(100vw - 32px));
           box-sizing: border-box;
-          background: var(--zhimo-bg);
+          background: var(--zhimo-surface-bg);
+          backdrop-filter: var(--zhimo-surface-blur);
+          -webkit-backdrop-filter: var(--zhimo-surface-blur);
           border: 1px solid var(--zhimo-border-strong);
           border-top: 3px solid var(--zhimo-seal);
           border-radius: var(--zhimo-radius);
@@ -124,7 +126,9 @@ class ZhimoToast extends HTMLElement {
           max-width: 360px;
           padding: 12px 16px;
           box-sizing: border-box;
-          background: var(--zhimo-bg);
+          background: var(--zhimo-surface-bg);
+          backdrop-filter: var(--zhimo-surface-blur);
+          -webkit-backdrop-filter: var(--zhimo-surface-blur);
           border: 1px solid var(--zhimo-border);
           border-radius: var(--zhimo-radius);
           box-shadow: var(--zhimo-shadow-md);

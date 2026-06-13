@@ -9,7 +9,9 @@ const PANEL_CSS = `
     overflow-y: auto;
     padding: 4px;
     box-sizing: border-box;
-    background: var(--zhimo-bg);
+    background: var(--zhimo-surface-bg);
+    backdrop-filter: var(--zhimo-surface-blur);
+    -webkit-backdrop-filter: var(--zhimo-surface-blur);
     border: 1px solid var(--zhimo-border-strong);
     border-radius: var(--zhimo-radius);
     box-shadow: var(--zhimo-shadow-md);

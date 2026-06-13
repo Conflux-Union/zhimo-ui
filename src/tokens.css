@@ -46,6 +46,10 @@
   --zhimo-overlay-bg: rgba(26, 23, 20, 0.32);
   --zhimo-overlay-blur: blur(8px) saturate(1.2);
 
+  /* 浮层磨砂纸面：所有遮挡水墨背景的面板共用，让墨色透出又不伤可读性 */
+  --zhimo-surface-bg: color-mix(in srgb, var(--zhimo-bg) 82%, transparent);
+  --zhimo-surface-blur: blur(12px) saturate(1.15);
+
   /* 动效 */
   --zhimo-transition: 180ms ease;
 }
@@ -78,4 +82,7 @@
 
   --zhimo-overlay-bg: rgba(0, 0, 0, 0.5);
   --zhimo-overlay-blur: blur(8px) saturate(1.2);
+
+  --zhimo-surface-bg: color-mix(in srgb, var(--zhimo-bg) 80%, transparent);
+  --zhimo-surface-blur: blur(12px) saturate(1.15);
 }

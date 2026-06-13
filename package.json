@@ -11,7 +11,7 @@
     "src"
   ],
   "scripts": {
-    "test": "node test/prefix-contract.test.js && node test/ink-rendering-contract.test.js"
+    "test": "node test/prefix-contract.test.js && node test/ink-rendering-contract.test.js && node test/surface-frost-contract.test.js"
   },
   "keywords": [
     "web-components",

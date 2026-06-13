@@ -9,7 +9,9 @@ class ZhimoCard extends HTMLElement {
         :host {
           display: block;
           font-family: var(--zhimo-font);
-          background: var(--zhimo-bg);
+          background: var(--zhimo-surface-bg);
+          backdrop-filter: var(--zhimo-surface-blur);
+          -webkit-backdrop-filter: var(--zhimo-surface-blur);
           border: 1px solid var(--zhimo-border);
           border-radius: var(--zhimo-radius);
           box-shadow: none;
@@ -42,7 +44,7 @@ class ZhimoCard extends HTMLElement {
           gap: 8px;
           padding: 12px 18px;
           border-top: 1px solid var(--zhimo-border);
-          background: var(--zhimo-bg-subtle);
+          background: color-mix(in srgb, var(--zhimo-bg-subtle) 72%, transparent);
         }
         header[hidden], footer[hidden] { display: none; }
       </style>

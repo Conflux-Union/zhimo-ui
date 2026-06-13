@@ -19,9 +19,9 @@ class ZhimoNavbar extends HTMLElement {
           height: 56px;
           padding: 0 24px;
           border-bottom: 1px solid var(--zhimo-border);
-          background: color-mix(in srgb, var(--zhimo-bg) 85%, transparent);
-          backdrop-filter: blur(10px);
-          -webkit-backdrop-filter: blur(10px);
+          background: var(--zhimo-surface-bg);
+          backdrop-filter: var(--zhimo-surface-blur);
+          -webkit-backdrop-filter: var(--zhimo-surface-blur);
           font-family: var(--zhimo-font);
         }
         .brand { font-family: var(--zhimo-font-serif); font-size: 16px; font-weight: 700; color: var(--zhimo-fg); }
