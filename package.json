@@ -2,6 +2,7 @@
   "name": "zhimo-ui",
   "version": "0.1.0",
   "description": "ZhiMo UI - paper-and-ink web components with a single seal-red accent",
+  "type": "module",
   "main": "src/index.js",
   "exports": {
     ".": "./src/index.js",
@@ -11,7 +12,7 @@
     "src"
   ],
   "scripts": {
-    "test": "node test/prefix-contract.test.js && node test/ink-rendering-contract.test.js && node test/surface-frost-contract.test.js"
+    "test": "node test/prefix-contract.test.cjs && node test/ink-rendering-contract.test.cjs && node test/surface-frost-contract.test.cjs"
   },
   "keywords": [
     "web-components",
