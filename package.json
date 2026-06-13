@@ -3,6 +3,10 @@
   "version": "0.1.0",
   "description": "ZhiMo UI - paper-and-ink web components with a single seal-red accent",
   "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Conflux-Union/zhimo-ui.git"
+  },
   "main": "src/index.js",
   "exports": {
     ".": "./src/index.js",
@@ -12,7 +16,8 @@
     "src"
   ],
   "scripts": {
-    "test": "node test/prefix-contract.test.cjs && node test/ink-rendering-contract.test.cjs && node test/surface-frost-contract.test.cjs"
+    "test": "node test/prefix-contract.test.cjs && node test/ink-rendering-contract.test.cjs && node test/surface-frost-contract.test.cjs",
+    "prepublishOnly": "npm test"
   },
   "keywords": [
     "web-components",
