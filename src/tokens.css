@@ -42,6 +42,10 @@
   --zhimo-shadow-lg: 0 12px 40px rgba(26, 23, 20, 0.18);
   --zhimo-focus-ring: 0 0 0 3px rgba(184, 67, 47, 0.22);
 
+  /* 遮罩：墨色薄雾 + 毛玻璃，给浮层一层高级的纸面景深 */
+  --zhimo-overlay-bg: rgba(26, 23, 20, 0.32);
+  --zhimo-overlay-blur: blur(8px) saturate(1.2);
+
   /* 动效 */
   --zhimo-transition: 180ms ease;
 }
@@ -71,4 +75,7 @@
   --zhimo-shadow-md: 0 2px 10px rgba(0, 0, 0, 0.5);
   --zhimo-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.6);
   --zhimo-focus-ring: 0 0 0 3px rgba(217, 106, 82, 0.28);
+
+  --zhimo-overlay-bg: rgba(0, 0, 0, 0.5);
+  --zhimo-overlay-blur: blur(8px) saturate(1.2);
 }

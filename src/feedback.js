@@ -14,7 +14,9 @@ class ZhimoModal extends HTMLElement {
           position: fixed;
           inset: 0;
           z-index: 1000;
-          background: rgba(0, 0, 0, 0.4);
+          background: var(--zhimo-overlay-bg);
+          backdrop-filter: var(--zhimo-overlay-blur);
+          -webkit-backdrop-filter: var(--zhimo-overlay-blur);
           animation: fade-in 150ms ease;
         }
         .dialog {
