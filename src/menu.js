@@ -50,28 +50,124 @@ class ZhimoPopupBase extends HTMLElement {
 
   get open() { return !this._panel.hidden; }
 
-  openAt(x, y) {
+  /* The panel is position:fixed, so its coords resolve against the nearest
+     containing block — the viewport only when no ancestor has a transform,
+     filter, backdrop-filter, or similar. Inside e.g. a modal dialog (which
+     uses translate + backdrop-filter) the fixed coords instead resolve
+     against the dialog box, shifting the popup by the dialog's top-left
+     corner. Walk the flattened (rendered) ancestor chain — including slot
+     assignment, since a slotted element's CSS ancestors live in the shadow
+     host's tree — find the first element that captures fixed positioning,
+     and return its bounding rect (null = the viewport itself).
+     offsetParent is NOT usable here: for fixed elements engines may report
+     <body> even when a transformed ancestor exists. */
+  _containingBlockRect() {
+    // start at the panel's parent: the panel's own backdrop-filter never
+    // affects its own positioning, only that of its descendants
+    let node = this._panel.parentNode;
+    let guard = 0;
+    while (node && guard++ < 64) {
+      // shadow boundary: continue at the shadow host
+      if (node.nodeType === Node.DOCUMENT_FRAGMENT_NODE) {
+        node = node.host;
+        continue;
+      }
+      if (node === document) {
+        node = document.documentElement;
+        continue;
+      }
+      if (node.nodeType !== Node.ELEMENT_NODE) break;
+      const cs = getComputedStyle(node);
+      if (
+        cs.transform !== 'none' ||
+        cs.filter !== 'none' ||
+        cs.backdropFilter !== 'none' ||
+        cs.willChange.includes('transform') ||
+        cs.willChange.includes('filter') ||
+        cs.perspective !== 'none' ||
+        cs.contain.includes('paint')
+      ) {
+        // fixed-position coords resolve against the containing block's
+        // padding box, so also discount its border widths
+        const rect = node.getBoundingClientRect();
+        return {
+          el: node,
+          left: rect.left + node.clientLeft,
+          top: rect.top + node.clientTop,
+        };
+      }
+      // slotted element: its CSS ancestors live in the shadow host's tree
+      if (node.assignedSlot) { node = node.assignedSlot; continue; }
+      node = node.parentNode;
+    }
+    return null;
+  }
+
+  /* The rect returned above is a snapshot: if the containing block itself is
+     mid-entrance-animation (e.g. the modal's pop-in scale), the coords are a
+     stale in-between state. _place() re-runs once that animation ends. */
+  _watchContainingBlock(cbEl) {
+    this._unwatchContainingBlock?.();
+    // listen on the element itself: it may live in an ancestor shadow tree,
+    // and animation/transition events do not cross the shadow boundary to
+    // reach document-level listeners
+    const onEnd = () => {
+      this._unwatchContainingBlock();
+      if (this.open) this._place();
+    };
+    cbEl.addEventListener('animationend', onEnd);
+    cbEl.addEventListener('animationcancel', onEnd);
+    cbEl.addEventListener('transitionend', onEnd);
+    this._unwatchContainingBlock = () => {
+      cbEl.removeEventListener('animationend', onEnd);
+      cbEl.removeEventListener('animationcancel', onEnd);
+      cbEl.removeEventListener('transitionend', onEnd);
+      this._unwatchContainingBlock = null;
+    };
+  }
+
+  openAt(x, y, anchorEl = null) {
+    this._anchorEl = anchorEl;
+    this._desired = { x, y };
     this._panel.hidden = false;
     this._panel.style.left = '0px';
     this._panel.style.top = '0px';
     this._bind();
     // 先渲染再量尺寸，贴边时往回收
-    requestAnimationFrame(() => {
-      const { offsetWidth: w, offsetHeight: h } = this._panel;
-      this._panel.style.left = `${Math.max(8, Math.min(x, innerWidth - w - 8))}px`;
-      this._panel.style.top = `${Math.max(8, Math.min(y, innerHeight - h - 8))}px`;
-    });
+    requestAnimationFrame(() => this._place());
     this.setAttribute('open', '');
+  }
+
+  _place() {
+    // re-derive coords from the anchor when possible: the stored ones may
+    // have been measured mid-animation too
+    if (this._anchorEl?.isConnected) {
+      const r = this._anchorEl.getBoundingClientRect();
+      this._panel.style.minWidth = `${r.width}px`;
+      this._desired = { x: r.left, y: r.bottom + 4 };
+    }
+    const { x, y } = this._desired;
+    const { offsetWidth: w, offsetHeight: h } = this._panel;
+    let px = Math.max(8, Math.min(x, innerWidth - w - 8));
+    let py = Math.max(8, Math.min(y, innerHeight - h - 8));
+    const cb = this._containingBlockRect();
+    if (cb) {
+      px -= cb.left;
+      py -= cb.top;
+      if (cb.el.getAnimations().length) this._watchContainingBlock(cb.el);
+    }
+    this._panel.style.left = `${px}px`;
+    this._panel.style.top = `${py}px`;
   }
 
   openBelow(el) {
     const r = el.getBoundingClientRect();
-    this._panel.style.minWidth = `${r.width}px`;
-    this.openAt(r.left, r.bottom + 4);
+    this.openAt(r.left, r.bottom + 4, el);
   }
 
   close() {
     if (this._panel.hidden) return;
+    this._unwatchContainingBlock?.();
     this._panel.hidden = true;
     this.removeAttribute('open');
     this._unbind();
